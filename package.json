@@ -2,7 +2,7 @@
   "name": "tours",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "Tarek Rahman",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -18,8 +18,6 @@
     "test:cov": "bun run jest --coverage",
     "test:debug": "bun run node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "bun run jest --config ./test/jest-e2e.json"
-
-
   },
   "lint-staged": {
     "*.js": "bun run eslint --fix",
@@ -29,8 +27,12 @@
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
+    "multer": "^1.4.5-lts.1",
+    "nestjs-zod": "^4.2.0",
     "reflect-metadata": "^0.2.0",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "znv": "^0.4.0",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
@@ -42,6 +44,7 @@
     "@types/supertest": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
+    "@types/multer": "^1.4.5",
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",

@@ -1,0 +1,35 @@
+name: ESLint
+
+on:
+  push:
+    branches:
+      - main
+      - dev-branch  # Add other branches here if needed
+  pull_request:
+    branches:
+      - main
+      - dev-branch
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install Bun
+        run: |
+          curl https://bun.sh/install | bash
+          echo "::add-path::/home/runner/.bun/bin"
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run ESLint
+        run: bun run eslint
