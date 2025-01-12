@@ -1,20 +1,38 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserController, UserModule, UserService } from './user';
+import { UserController, UserModule } from './user';
 
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ZodSerializerInterceptor, ZodValidationPipe } from 'nestjs-zod';
 import { AllExceptionsFilter } from './error/allExceptionsFilter';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { configConstants, envConfiguration } from './config';
+import typeorm from './config/typeorm';
 
 @Module({
-  imports: [UserModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [typeorm, envConfiguration],
+    }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        // const validateEnv = configService.get(configConstants.ENVIRONMENT);
+        // console.log('TypeORM Configuration:', database, validateEnv); // Log the configuration to debug
+        return configService.get(configConstants.TYPEORM);
+      },
+    }),
+    UserModule,
+  ],
   controllers: [AppController, UserController],
   providers: [
     AppService,
-    UserService,
+    UserModule,
     {
-      provide: APP_FILTER,
+      provide: APP_PIPE,
       useClass: ZodValidationPipe,
     },
     { provide: APP_INTERCEPTOR, useClass: ZodSerializerInterceptor },
