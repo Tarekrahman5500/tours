@@ -5,10 +5,12 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  Req,
 } from '@nestjs/common';
 import { UserService } from '../services';
 import { CreateUserDto, UpdateUserDto } from '../dto';
 import { ZodSerializerDto } from 'nestjs-zod';
+import { Request } from 'express';
 
 @Controller('user')
 export class UserController {
@@ -21,7 +23,11 @@ export class UserController {
 
   @ZodSerializerDto(UpdateUserDto)
   @Get(':id')
-  async getUser(@Param('id', ParseUUIDPipe) id: string) {
+  async getUser(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Req() request: Request,
+  ) {
+    console.log(request.session);
     return await this.userService.getUserById(id);
   }
 }

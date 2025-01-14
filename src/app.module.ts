@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -10,6 +10,8 @@ import { AllExceptionsFilter } from './error/allExceptionsFilter';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configConstants, envConfiguration } from './config';
 import typeorm from './config/typeorm';
+import { SessionMiddleware } from './middleware';
+import { RedisModule } from './redis';
 
 @Module({
   imports: [
@@ -26,6 +28,7 @@ import typeorm from './config/typeorm';
       },
     }),
     UserModule,
+    RedisModule,
   ],
   controllers: [AppController, UserController],
   providers: [
@@ -53,4 +56,8 @@ import typeorm from './config/typeorm';
     },*/
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(SessionMiddleware).forRoutes('*'); // Apply session middleware globally
+  }
+}
