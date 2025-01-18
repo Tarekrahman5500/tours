@@ -5,7 +5,7 @@ import { configConstants } from './config.constants';
 
 // TypeORM DataSource configuration
 
-console.log(envVariables);
+//console.log(envVariables);
 const dataSourceConfig: DataSourceOptions = {
   type: envVariables.DATABASE_DIALECT,
   host: envVariables.DATABASE_HOST,

@@ -7,3 +7,9 @@ declare global {
     }
   }
 }
+
+declare module 'express-session' {
+  interface SessionData {
+    userId?: string; // Add userId as an optional property
+  }
+}

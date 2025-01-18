@@ -23,4 +23,15 @@ export class UserService {
     }
     return user;
   }
+
+  //@ZodSerializerDto(SerializedUserDto)
+
+  async getUserByEmail(email: string): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { email } });
+    //console.log(user);
+    if (!user) {
+      throw new NotFoundException(`User with ID ${email} not found`);
+    }
+    return user;
+  }
 }

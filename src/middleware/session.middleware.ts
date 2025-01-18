@@ -27,6 +27,6 @@ export class SessionMiddleware implements NestMiddleware {
         httpOnly: true,
         maxAge: envVariables.SESSION_EXPIRE_TIME, // Convert expiration to ms
       },
-    })(req, res, next); // Attach the session middleware
+    })(req, res, next);
   }
 }

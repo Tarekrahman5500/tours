@@ -16,3 +16,13 @@ export const GetUserSchema = z.object({
 
 // New schema extending CreateUserSchema and omitting 'password'
 export const UpdateUserSchema = CreateUserSchema.omit({ password: true });
+
+// Extend CreateUserSchema for UserSchema
+export const UserSchema = CreateUserSchema.extend({
+  id: z.string().uuid('Invalid UUID format'),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
+// Serialized User schema (excluding password and sensitive fields)
+export const SerializedUserSchema = UserSchema.omit({ password: true });

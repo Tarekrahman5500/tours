@@ -11,8 +11,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configConstants, envConfiguration } from './config';
 import typeorm from './config/typeorm';
 import { SessionMiddleware } from './middleware';
-import { RedisModule } from './redis';
-
+import { redisConstants, RedisModule } from './redis';
+import { CacheModule } from '@nestjs/cache-manager';
+import { CacheStore } from '@nestjs/common/cache';
+import { AuthModule } from './auth/auth.module';
+import * as redisStore from 'cache-manager-ioredis';
+import { PassportModule } from '@nestjs/passport';
+import * as passport from 'passport';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -27,8 +32,21 @@ import { RedisModule } from './redis';
         return configService.get(configConstants.TYPEORM);
       },
     }),
+    PassportModule.register({ session: true }), // Enable session support
+    AuthModule, // Import your authentication module
     UserModule,
     RedisModule,
+    CacheModule.registerAsync({
+      imports: [RedisModule], // Import the custom Redis module
+      inject: [redisConstants.REDIS_CLIENT], // Inject the Redis client provided by the Redis module
+      useFactory: async (redisClient) => {
+        return {
+          store: redisStore,
+          client: redisClient, // Use the injected Redis client
+          ttl: 5 * 60000, // Set default TTL in seconds
+        } as unknown as CacheStore; // Type assertion for compatibility
+      },
+    }),
   ],
   controllers: [AppController, UserController],
   providers: [
@@ -58,6 +76,9 @@ import { RedisModule } from './redis';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(SessionMiddleware).forRoutes('*'); // Apply session middleware globally
+    consumer.apply(SessionMiddleware).forRoutes('*');
+    // Then apply passport middleware to handle authentication session
+    consumer.apply(passport.initialize()).forRoutes('*');
+    consumer.apply(passport.session()).forRoutes('*');
   }
 }
