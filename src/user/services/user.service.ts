@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  Injectable,
+  NotFoundException,
+  UseInterceptors,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities';
 import { Repository } from 'typeorm';
@@ -26,12 +31,15 @@ export class UserService {
 
   //@ZodSerializerDto(SerializedUserDto)
 
-  async getUserByEmail(email: string): Promise<User> {
+  @UseInterceptors(ClassSerializerInterceptor)
+  async getUserByEmail(email: string): Promise<Partial<User>> {
     const user = await this.userRepository.findOne({ where: { email } });
-    //console.log(user);
+
     if (!user) {
-      throw new NotFoundException(`User with ID ${email} not found`);
+      throw new NotFoundException(`User with email ${email} not found`);
     }
+
+    //return plainToInstance(User, user, { excludeExtraneousValues: true }); // Omit the password field
     return user;
   }
 }

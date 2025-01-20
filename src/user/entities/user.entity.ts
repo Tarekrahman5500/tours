@@ -2,6 +2,7 @@ import { BeforeInsert, Column, Entity } from 'typeorm';
 import { BaseModel } from '../../models';
 import { StatusEnum, statusEnum } from '../constants';
 import * as argon2 from 'argon2';
+import { Exclude } from 'class-transformer';
 @Entity('users') // Table name
 export class User extends BaseModel {
   @Column({ type: 'varchar', length: 255 })
@@ -17,6 +18,7 @@ export class User extends BaseModel {
   phone: string;
 
   @Column({ type: 'varchar', length: 255 })
+  @Exclude()
   password: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })

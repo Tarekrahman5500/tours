@@ -5,6 +5,7 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 export class LoggedInGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
+    console.log(request);
     return request.isAuthenticated(); // Returns true if the user is logged in
   }
 }

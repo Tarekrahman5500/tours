@@ -1,4 +1,5 @@
-import { Session } from 'express-session'; // Import the session type from express-session
+import { Session } from 'express-session';
+import { User } from '../user/entities'; // Import the session type from express-session
 
 declare global {
   namespace Express {
@@ -11,5 +12,8 @@ declare global {
 declare module 'express-session' {
   interface SessionData {
     userId?: string; // Add userId as an optional property
+    passport?: {
+      user?: User;
+    };
   }
 }

@@ -23,7 +23,7 @@ export class SessionMiddleware implements NestMiddleware {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        secure: true, // Secure cookies in production
+        secure: false, // Secure cookies in production
         httpOnly: true,
         maxAge: envVariables.SESSION_EXPIRE_TIME, // Convert expiration to ms
       },

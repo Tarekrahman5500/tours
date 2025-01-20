@@ -6,11 +6,13 @@ import {
   ParseUUIDPipe,
   Post,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from '../services';
 import { CreateUserDto, UpdateUserDto } from '../dto';
 import { ZodSerializerDto } from 'nestjs-zod';
 import { Request } from 'express';
+import { LoggedInGuard } from '../../auth/guard/logged-in.guard';
 
 @Controller('user')
 export class UserController {
@@ -21,6 +23,7 @@ export class UserController {
     return await this.userService.createUser(createUserDto);
   }
 
+  @UseGuards(LoggedInGuard)
   @ZodSerializerDto(UpdateUserDto)
   @Get(':id')
   async getUser(

@@ -1,18 +1,12 @@
 // src/guards/local.guard.ts
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
 export class LocalGuard extends AuthGuard('local') {
-  handleRequest(err, user, info) {
-    if (err) {
-      console.error(err); // Log any errors
-      throw err;
-    }
-    if (!user) {
-      console.error(info); // Log info to understand why authentication failed
-      throw new UnauthorizedException();
-    }
-    return user;
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const result = (await super.canActivate(context)) as boolean;
+    await super.logIn(context.switchToHttp().getRequest());
+    return result;
   }
 }
